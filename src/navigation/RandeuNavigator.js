@@ -1,4 +1,5 @@
 import React from "react";
+import { Text } from "react-native";
 import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import { Platform } from "react-native";
@@ -9,6 +10,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 
 import SectorsScreen from "../screens/User/SectorsScreen";
+import BusinessTypesScreen from "../screens/User/BusinessTypesScreen";
 import BusinessesScreen from "../screens/User/BusinessesScreen";
 import BusinessDetailScreen from "../screens/User/BusinessDetailScreen";
 import BusinessCreateScreen from "../screens/Business/BusinessCreateScreen";
@@ -31,6 +33,7 @@ const defaultNavOptions = {
 const AppNavigator = createStackNavigator(
   {
     Sectors: SectorsScreen,
+    BusinessTypes: BusinessTypesScreen,
     Businesses: BusinessesScreen,
     Business: BusinessDetailScreen,
   },

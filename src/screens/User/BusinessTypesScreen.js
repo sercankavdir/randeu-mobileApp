@@ -8,46 +8,57 @@ import {
   Button,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import * as sectorActions from "../../store/actions/sectors";
+import * as businessTypeActions from "../../store/actions/businessTypes";
 import Colors from "../../constants/Colors";
-import SectorItem from "../../components/UI/SectorItem";
+import SmallCard from "../../components/UI/SmallCard";
 
-const SectorsScreen = (props) => {
+const BusinessTypeScreen = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
-  const sectors = useSelector((state) => state.sectors.sectorList);
+  const businessTypes = useSelector(
+    (state) => state.businessTypes.businessTypeList
+  );
   const dispatch = useDispatch();
 
-  const sectorList = useCallback(async () => {
+  const sectorId = props.navigation.getParam("sectorId");
+
+  const businessTypeList = useCallback(async () => {
     setError(null);
     try {
-      await dispatch(sectorActions.fetchSectors());
+      await dispatch(businessTypeActions.fetchBusinessTypes(sectorId));
     } catch (err) {
       setError(err);
     }
   }, [dispatch, setIsLoading, setError]);
 
   useEffect(() => {
-    const willFocusSub = props.navigation.addListener("willFocus", sectorList);
+    const willFocusSub = props.navigation.addListener(
+      "willFocus",
+      businessTypeList
+    );
 
     // Clean up. Whenever this component is destroyed or re-run
     return () => {
       willFocusSub.remove();
     };
-  }, [sectorList]);
+  }, [businessTypeList]);
 
   useEffect(() => {
     setIsLoading(true);
-    sectorList().then(() => {
+    businessTypeList().then(() => {
       setIsLoading(false);
     });
-  }, [sectorList, dispatch]);
+  }, [businessTypeList, dispatch]);
 
   if (error) {
     return (
       <View style={styles.centered}>
         <Text>An error occurred!</Text>
-        <Button title="Try Again" onPress={sectorList} color={Colors.primary} />
+        <Button
+          title="Try Again"
+          onPress={businessTypeList}
+          color={Colors.primary}
+        />
       </View>
     );
   }
@@ -60,20 +71,19 @@ const SectorsScreen = (props) => {
     );
   }
 
-  const selectItemHandler = (id, title) => {
-    props.navigation.navigate("BusinessTypes", {
-      sectorId: id,
+  const selectItemHandler = (title) => {
+    props.navigation.navigate("Businesses", {
       sectorName: title,
     });
   };
 
   const renderItem = (itemData) => {
     return (
-      <SectorItem
-        title={itemData.item.sectorName}
+      <SmallCard
+        title={itemData.item.businessTypeName}
         image={itemData.item.imageUrl}
         onSelect={() => {
-          selectItemHandler(itemData.item._id, itemData.item.sectorName);
+          selectItemHandler(itemData.item.businessTypeList);
         }}
       />
     );
@@ -82,15 +92,18 @@ const SectorsScreen = (props) => {
   return (
     <FlatList
       keyExtractor={(item, index) => item._id}
-      data={sectors}
+      data={businessTypes}
+      vertical
+      showsVerticalScrollIndicator={false}
+      numColumns={2}
       renderItem={renderItem}
     />
   );
 };
 
-SectorsScreen.navigationOptions = (navData) => {
+BusinessTypeScreen.navigationOptions = (navData) => {
   return {
-    headerTitle: "Sektörler",
+    headerTitle: navData.navigation.getParam("sectorName"),
   };
 };
 
@@ -107,4 +120,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SectorsScreen;
+export default BusinessTypeScreen;

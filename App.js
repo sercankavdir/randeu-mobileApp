@@ -1,8 +1,20 @@
 import React, { useState } from "react";
+import { createStore, combineReducers, applyMiddleware } from "redux";
+import { Provider } from "react-redux";
+import ReduxThunk from "redux-thunk";
 import { AppLoading } from "expo";
 import * as Font from "expo-font";
 
 import RandeuNavigator from "./src/navigation/RandeuNavigator";
+import sectorsReducer from "./src/store/reducers/sectors";
+import businessTypeReducer from "./src/store/reducers/businessTypes";
+
+const rootReducer = combineReducers({
+  sectors: sectorsReducer,
+  businessTypes: businessTypeReducer,
+});
+
+const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
 const fetchFonts = () => {
   return Font.loadAsync({
@@ -24,5 +36,9 @@ export default function App() {
       />
     );
   }
-  return <RandeuNavigator />;
+  return (
+    <Provider store={store}>
+      <RandeuNavigator />
+    </Provider>
+  );
 }
