@@ -8,46 +8,46 @@ import {
   Button,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
+
+import DefaultText from "../../components/Texts/DefaultText";
 import * as sectorActions from "../../store/actions/sectors";
 import Colors from "../../constants/Colors";
 import SectorItem from "../../components/UI/SectorItem";
 
 const SectorsScreen = (props) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState();
-  const sectors = useSelector((state) => state.sectors.sectorList);
   const dispatch = useDispatch();
 
-  const sectorList = useCallback(async () => {
-    setError(null);
+  const sectorError = useSelector((state) => {
+    return state.sectors.sectorListError;
+  });
+
+  const sectorList = useSelector((state) => {
+    return state.sectors.sectorList;
+  });
+
+  const onInitSectorList = useCallback(async () => {
     try {
-      await dispatch(sectorActions.fetchSectors());
-    } catch (err) {
-      setError(err);
-    }
-  }, [dispatch, setIsLoading, setError]);
-
-  useEffect(() => {
-    const willFocusSub = props.navigation.addListener("willFocus", sectorList);
-
-    // Clean up. Whenever this component is destroyed or re-run
-    return () => {
-      willFocusSub.remove();
-    };
-  }, [sectorList]);
+      await dispatch(sectorActions.initSectorList());
+    } catch (err) {}
+  }, [dispatch, setIsLoading]);
 
   useEffect(() => {
     setIsLoading(true);
-    sectorList().then(() => {
+    onInitSectorList().then(() => {
       setIsLoading(false);
     });
-  }, [sectorList, dispatch]);
+  }, [onInitSectorList]);
 
-  if (error) {
+  if (sectorError) {
     return (
       <View style={styles.centered}>
-        <Text>An error occurred!</Text>
-        <Button title="Try Again" onPress={sectorList} color={Colors.primary} />
+        <Text>{sectorError}</Text>
+        <Button
+          title="Tekrar Dene!"
+          onPress={sectorList}
+          color={Colors.primary}
+        />
       </View>
     );
   }
@@ -82,7 +82,7 @@ const SectorsScreen = (props) => {
   return (
     <FlatList
       keyExtractor={(item, index) => item._id}
-      data={sectors}
+      data={sectorList}
       renderItem={renderItem}
     />
   );

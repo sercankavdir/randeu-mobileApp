@@ -15,6 +15,7 @@ import BusinessesScreen from "../screens/User/BusinessesScreen";
 import BusinessDetailScreen from "../screens/User/BusinessDetailScreen";
 import BusinessCreateScreen from "../screens/Business/BusinessCreateScreen";
 import ProfileScreen from "../screens/User/ProfileScreen";
+import AuthScreen from "../screens/Auth/AuthScreen";
 import Colors from "../constants/Colors";
 
 const defaultNavOptions = {
@@ -100,6 +101,15 @@ const tabConfiguration = {
   },
 };
 
+const AuthNavigator = createStackNavigator(
+  {
+    Auth: AuthScreen,
+  },
+  {
+    defaultNavigationOptions: defaultNavOptions,
+  }
+);
+
 const RandeuTabNavigator =
   Platform.OS === "android"
     ? createMaterialBottomTabNavigator(tabConfiguration, {
@@ -114,5 +124,14 @@ const RandeuTabNavigator =
           activeTintColor: Colors.primaryColor,
         },
       });
+
+const MainNavigator = createSwitchNavigator({
+  Auth: {
+    screen: AuthNavigator,
+  },
+  Randeu: {
+    screen: RandeuTabNavigator,
+  },
+});
 
 export default createAppContainer(RandeuTabNavigator);

@@ -8,10 +8,14 @@ import * as Font from "expo-font";
 import RandeuNavigator from "./src/navigation/RandeuNavigator";
 import sectorsReducer from "./src/store/reducers/sectors";
 import businessTypeReducer from "./src/store/reducers/businessTypes";
+import businessesReducer from "./src/store/reducers/businesses";
+import authReducer from "./src/store/reducers/auth";
 
 const rootReducer = combineReducers({
   sectors: sectorsReducer,
   businessTypes: businessTypeReducer,
+  businesses: businessesReducer,
+  auth: authReducer,
 });
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));

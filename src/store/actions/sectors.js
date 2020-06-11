@@ -1,19 +1,30 @@
-export const SET_SECTORS = "SET_SECTORS";
+import * as actionTypes from "./actionTypes";
 
-export const fetchSectors = () => {
+export const setSectorList = (sectorList) => {
+  return {
+    type: actionTypes.SET_SECTORS,
+    sectorList: sectorList,
+  };
+};
+
+export const fetchSectorListFailed = (err) => {
+  return {
+    type: actionTypes.FETCH_SECTORS_FAILED,
+    sectorListError: err,
+  };
+};
+
+export const initSectorList = () => {
   return async (dispatch) => {
     try {
       const response = await fetch(
         "https://randeu-backend.herokuapp.com/admin/sectors"
       );
-
       const resData = await response.json();
-      dispatch({
-        type: SET_SECTORS,
-        sectorList: resData.data,
-      });
+      const data = resData.data;
+      dispatch(setSectorList(data));
     } catch (err) {
-      throw err;
+      dispatch(fetchSectorListFailed(err));
     }
   };
 };

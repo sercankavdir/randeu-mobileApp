@@ -8,6 +8,8 @@ import {
   Button,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
+
+import DefaultText from "../../components/Texts/DefaultText";
 import * as businessTypeActions from "../../store/actions/businessTypes";
 import Colors from "../../constants/Colors";
 import SmallCard from "../../components/UI/SmallCard";
@@ -53,9 +55,9 @@ const BusinessTypeScreen = (props) => {
   if (error) {
     return (
       <View style={styles.centered}>
-        <Text>An error occurred!</Text>
+        <Text>Bir hata oluştu!</Text>
         <Button
-          title="Try Again"
+          title="Tekrar Dene"
           onPress={businessTypeList}
           color={Colors.primary}
         />
@@ -71,9 +73,19 @@ const BusinessTypeScreen = (props) => {
     );
   }
 
+  // if (!isLoading && businessTypes.length === 0) {
+  //   return (
+  //     <View style={centered}>
+  //       <DefaultText>
+  //         İş yeri tipleri bulunamadı. Lütfen daha sonra tekrar deneyiniz.
+  //       </DefaultText>
+  //     </View>
+  //   );
+  // }
+
   const selectItemHandler = (title) => {
     props.navigation.navigate("Businesses", {
-      sectorName: title,
+      businessTypeName: title,
     });
   };
 
@@ -83,7 +95,7 @@ const BusinessTypeScreen = (props) => {
         title={itemData.item.businessTypeName}
         image={itemData.item.imageUrl}
         onSelect={() => {
-          selectItemHandler(itemData.item.businessTypeList);
+          selectItemHandler(itemData.item.businessTypeName);
         }}
       />
     );
