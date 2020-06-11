@@ -1,6 +1,20 @@
-export const SET_BUSINESSTYPES = "SET_BUSINESSES";
+import * as actionTypes from "./actionTypes";
 
-export const fetchBusinessTypes = (id) => {
+export const setBusinessTypeList = (businessTypeList) => {
+  return {
+    type: actionTypes.SET_BUSINESSTYPES,
+    businessTypeList: businessTypeList,
+  };
+};
+
+export const fetchBusinessTypeListFailed = (err) => {
+  return {
+    type: actionTypes.FETCH_BUSINESSTYPES_FAILED,
+    businessTypeListError: err,
+  };
+};
+
+export const initBusinessTypeList = (id) => {
   return async (dispatch) => {
     try {
       const response = await fetch(
@@ -8,13 +22,10 @@ export const fetchBusinessTypes = (id) => {
       );
 
       const resData = await response.json();
-
-      dispatch({
-        type: SET_BUSINESSTYPES,
-        businessTypeList: resData.data.businessTypeList,
-      });
+      const data = resData.data.businessTypeList;
+      dispatch(setBusinessTypeList(data));
     } catch (err) {
-      throw err;
+      dispatch(fetchBusinessTypeListFailed(err));
     }
   };
 };

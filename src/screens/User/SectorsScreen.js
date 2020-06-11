@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 
-import DefaultText from "../../components/Texts/DefaultText";
 import * as sectorActions from "../../store/actions/sectors";
 import Colors from "../../constants/Colors";
 import SectorItem from "../../components/UI/SectorItem";
@@ -29,7 +28,9 @@ const SectorsScreen = (props) => {
   const onInitSectorList = useCallback(async () => {
     try {
       await dispatch(sectorActions.initSectorList());
-    } catch (err) {}
+    } catch (err) {
+      await sectorActions.fetchSectorListFailed(err);
+    }
   }, [dispatch, setIsLoading]);
 
   useEffect(() => {

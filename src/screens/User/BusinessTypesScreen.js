@@ -9,56 +9,46 @@ import {
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 
-import DefaultText from "../../components/Texts/DefaultText";
 import * as businessTypeActions from "../../store/actions/businessTypes";
 import Colors from "../../constants/Colors";
 import SmallCard from "../../components/UI/SmallCard";
 
 const BusinessTypeScreen = (props) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState();
-  const businessTypes = useSelector(
-    (state) => state.businessTypes.businessTypeList
-  );
   const dispatch = useDispatch();
 
   const sectorId = props.navigation.getParam("sectorId");
 
-  const businessTypeList = useCallback(async () => {
-    setError(null);
+  const businessTypeError = useSelector((state) => {
+    return state.businessTypes.businessTypeListError;
+  });
+
+  const businessTypeList = useSelector((state) => {
+    return state.businessTypes.businessTypeList;
+  });
+
+  const onInitBusinessTypeList = useCallback(async () => {
     try {
-      await dispatch(businessTypeActions.fetchBusinessTypes(sectorId));
+      await dispatch(businessTypeActions.initBusinessTypeList(sectorId));
     } catch (err) {
-      setError(err);
+      await dispatch(businessTypeActions.fetchBusinessTypeListFailed(err));
     }
-  }, [dispatch, setIsLoading, setError]);
-
-  useEffect(() => {
-    const willFocusSub = props.navigation.addListener(
-      "willFocus",
-      businessTypeList
-    );
-
-    // Clean up. Whenever this component is destroyed or re-run
-    return () => {
-      willFocusSub.remove();
-    };
-  }, [businessTypeList]);
+  }, [dispatch, setIsLoading]);
 
   useEffect(() => {
     setIsLoading(true);
-    businessTypeList().then(() => {
+    onInitBusinessTypeList().then(() => {
       setIsLoading(false);
     });
-  }, [businessTypeList, dispatch]);
+  }, [onInitBusinessTypeList]);
 
-  if (error) {
+  if (businessTypeError) {
     return (
       <View style={styles.centered}>
-        <Text>Bir hata oluştu!</Text>
+        <Text>{businessTypeError}</Text>
         <Button
-          title="Tekrar Dene"
-          onPress={businessTypeList}
+          title="Tekrar Dene!"
+          onPress={() => {}}
           color={Colors.primary}
         />
       </View>
@@ -104,7 +94,7 @@ const BusinessTypeScreen = (props) => {
   return (
     <FlatList
       keyExtractor={(item, index) => item._id}
-      data={businessTypes}
+      data={businessTypeList}
       vertical
       showsVerticalScrollIndicator={false}
       numColumns={2}
