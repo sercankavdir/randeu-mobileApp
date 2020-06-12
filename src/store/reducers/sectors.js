@@ -1,7 +1,7 @@
 import * as actionTypes from "../actions/actionTypes";
 
 const initialState = {
-  sectorList: null,
+  sectorList: [],
   sectorListError: null,
 };
 

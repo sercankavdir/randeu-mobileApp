@@ -2,6 +2,8 @@ import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 
 const BusinessDetailScreen = (props) => {
+  const businessId = props.navigation.getParam("businessId");
+  console.log(businessId);
   return (
     <View style={styles.container}>
       <Text>Business Detail Screen</Text>

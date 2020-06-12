@@ -9,56 +9,44 @@ import {
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 
-import DefaultText from "../../components/Texts/DefaultText";
 import * as businessesActions from "../../store/actions/businesses";
 import Colors from "../../constants/Colors";
 import SectorItem from "../../components/UI/SectorItem";
 
 const BusinessesScreen = (props) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState();
-  const businesses = useSelector((state) => state.businesses.businesses);
   const dispatch = useDispatch();
 
   const businessTypeName = props.navigation.getParam("businessTypeName");
 
-  const businessesList = useCallback(async () => {
-    setError(null);
+  const businessesError = useSelector((state) => {
+    return state.businesses.businessesListError;
+  });
+
+  const businessesList = useSelector((state) => {
+    return state.businesses.businessesList;
+  });
+
+  const onInitBusinessesList = useCallback(async () => {
     try {
-      await dispatch(businessesActions.fetchBusinesses(businessTypeName));
+      await dispatch(businessesActions.initBusinessesList(businessTypeName));
     } catch (err) {
-      setError(err);
+      await dispatch(businessesActions.fetchBusinessesListFailed(err));
     }
-  }, [dispatch, setIsLoading, setError]);
-
-  useEffect(() => {
-    const willFocusSub = props.navigation.addListener(
-      "willFocus",
-      businessesList
-    );
-
-    // Clean up. Whenever this component is destroyed or re-run
-    return () => {
-      willFocusSub.remove();
-    };
-  }, [businessesList]);
+  }, [dispatch, setIsLoading]);
 
   useEffect(() => {
     setIsLoading(true);
-    businessesList().then(() => {
+    onInitBusinessesList().then(() => {
       setIsLoading(false);
     });
-  }, [businessesList, dispatch]);
+  }, [onInitBusinessesList]);
 
-  if (error) {
+  if (businessesError) {
     return (
       <View style={styles.centered}>
-        <Text>Bir hata oluştu!</Text>
-        <Button
-          title="Tekrar Dene"
-          onPress={businessesList}
-          color={Colors.primary}
-        />
+        <Text>{businessesError}</Text>
+        <Button title="Tekrar Dene" onPress={() => {}} color={Colors.primary} />
       </View>
     );
   }
@@ -71,9 +59,9 @@ const BusinessesScreen = (props) => {
     );
   }
 
-  // if (!isLoading && businesses.length === 0) {
+  // if (!isLoading && businessesList.length === 0) {
   //   return (
-  //     <View style={centered}>
+  //     <View style={styles.centered}>
   //       <DefaultText>
   //         İş yerleri bulunamadı. Lütfen daha sonra tekrar deneyiniz.
   //       </DefaultText>
@@ -81,10 +69,9 @@ const BusinessesScreen = (props) => {
   //   );
   // }
 
-  const selectItemHandler = (id, title) => {
-    props.navigation.navigate("BusinessTypes", {
-      sectorId: id,
-      sectorName: title,
+  const selectItemHandler = (id) => {
+    props.navigation.navigate("Business", {
+      businessId: id,
     });
   };
 
@@ -95,7 +82,7 @@ const BusinessesScreen = (props) => {
         image={
           "https://images.unsplash.com/photo-1444653614773-995cb1ef9efa?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1355&q=80"
         }
-        onSelect={() => {}}
+        onSelect={() => selectItemHandler(itemData.item._id)}
       />
     );
   };
@@ -103,7 +90,7 @@ const BusinessesScreen = (props) => {
   return (
     <FlatList
       keyExtractor={(item, index) => item._id}
-      data={businesses}
+      data={businessesList}
       renderItem={renderItem}
     />
   );
