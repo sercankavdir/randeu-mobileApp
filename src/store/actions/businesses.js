@@ -17,8 +17,6 @@ export const fetchBusinessesListFailed = (err) => {
 export const initBusinessesList = (businessTypeName) => {
   return async (dispatch) => {
     try {
-      console.log(businessTypeName);
-
       const response = await fetch(
         "https://randeu-backend.herokuapp.com/business/businesslist-by-businesstype",
         {

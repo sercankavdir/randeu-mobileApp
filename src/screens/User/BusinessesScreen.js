@@ -11,7 +11,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import * as businessesActions from "../../store/actions/businesses";
 import Colors from "../../constants/Colors";
-import SectorItem from "../../components/UI/SectorItem";
+import BusinessItem from "../../components/UI/BusinessItem";
 
 const BusinessesScreen = (props) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -69,20 +69,23 @@ const BusinessesScreen = (props) => {
   //   );
   // }
 
-  const selectItemHandler = (id) => {
+  const selectItemHandler = (id, name) => {
     props.navigation.navigate("Business", {
       businessId: id,
+      businessName: name,
     });
   };
 
   const renderItem = (itemData) => {
     return (
-      <SectorItem
+      <BusinessItem
         title={itemData.item.businessName}
         image={
           "https://images.unsplash.com/photo-1444653614773-995cb1ef9efa?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1355&q=80"
         }
-        onSelect={() => selectItemHandler(itemData.item._id)}
+        onSelect={() =>
+          selectItemHandler(itemData.item._id, itemData.item.businessName)
+        }
       />
     );
   };
@@ -98,7 +101,7 @@ const BusinessesScreen = (props) => {
 
 BusinessesScreen.navigationOptions = (navData) => {
   return {
-    headerTitle: "Sektörler",
+    headerTitle: navData.navigation.getParam("businessTypeName"),
   };
 };
 

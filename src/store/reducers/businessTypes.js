@@ -26,7 +26,7 @@ export default (state = initialState, action) => {
       return setBusinessTypeList(state, action);
 
     case actionTypes.FETCH_BUSINESSTYPES_FAILED:
-      return fetchBusinessTypeListError(action, state);
+      return fetchBusinessTypeListError(state, action);
     default:
       return state;
   }

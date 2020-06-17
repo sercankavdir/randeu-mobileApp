@@ -54,7 +54,7 @@ const tabConfiguration = {
       tabBarIcon: (tabInfo) => {
         return <AntDesign name="home" size={25} color={tabInfo.tintColor} />;
       },
-      tabBarColor: Colors.primaryColor,
+      tabBarColor: Colors.primary,
       tabBarLabel:
         Platform.OS === "android" ? (
           <Text style={{ fontFamily: "open-sans-bold" }}>Ana Sayfa</Text>
@@ -75,7 +75,7 @@ const tabConfiguration = {
           />
         );
       },
-      tabBarColor: Colors.primaryColor,
+      tabBarColor: Colors.primary,
       tabBarLabel:
         Platform.OS === "android" ? (
           <Text style={{ fontFamily: "open-sans-bold" }}>İş yeri</Text>
@@ -90,7 +90,7 @@ const tabConfiguration = {
       tabBarIcon: (tabInfo) => {
         return <AntDesign name="user" size={25} color={tabInfo.tintColor} />;
       },
-      tabBarColor: Colors.primaryColor,
+      tabBarColor: Colors.primary,
       tabBarLabel:
         Platform.OS === "android" ? (
           <Text style={{ fontFamily: "open-sans-bold" }}>Profil</Text>
@@ -121,7 +121,7 @@ const RandeuTabNavigator =
           labelStyle: {
             fontFamily: "open-sans-bold",
           },
-          activeTintColor: Colors.primaryColor,
+          activeTintColor: Colors.primary,
         },
       });
 
